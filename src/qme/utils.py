@@ -54,3 +54,66 @@ def hermiticity(rho, channel, atol=1e-10):
     )
 
     return is_hermitian
+
+
+def lindblad_rhs(t, rho_flat, H, jumps):
+    """
+    Lindblad equation for a finite-dimensional system.
+
+    H:     (d, d) Hamiltonian, with hbar = 1
+    jumps: sequence of (d, d) jump operators
+    """
+    d = H.shape[0]
+    rho = rho_flat.reshape(d, d)
+
+    drho_dt = -1j * (H @ rho - rho @ H)
+
+    for L in jumps:
+        LdagL = L.conj().T @ L
+        drho_dt += (
+            L @ rho @ L.conj().T
+            - 0.5 * (LdagL @ rho + rho @ LdagL)
+        )
+
+    return drho_dt.reshape(d * d)
+
+
+def trace_environment(rho_SE):
+    """Trace out a two-level environment; tensor order is S ⊗ E."""
+    return np.trace(rho_SE.reshape(2, 2, 2, 2), axis1=1, axis2=3)
+
+
+def joint_rhs(t, rho_flat, H_SE):
+    """Return the flattened derivative -i[H_SE, rho_SE]."""
+    rho_SE = rho_flat.reshape(4, 4)
+    drho_SE_dt = -1j * (H_SE @ rho_SE - rho_SE @ H_SE)
+    return drho_SE_dt.reshape(16)
+
+
+def liouvillian_matrix(H, jumps):
+    """
+    Build L such that
+
+        d vec(rho)/dt = L @ vec(rho)
+
+    using NumPy's default row-major reshape order.
+    """
+    H = np.asarray(H, dtype=complex)
+    d = H.shape[0]
+    I = np.eye(d, dtype=complex)
+
+    L_matrix = -1j * (
+        np.kron(H, I) - np.kron(I, H.T)
+    )
+
+    for jump in jumps:
+        jump = np.asarray(jump, dtype=complex)
+        M = jump.conj().T @ jump
+
+        L_matrix += (
+            np.kron(jump, jump.conj())
+            - 0.5 * np.kron(M, I)
+            - 0.5 * np.kron(I, M.T)
+        )
+
+    return L_matrix
