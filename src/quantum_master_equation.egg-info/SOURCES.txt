@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+src/qme/__init__.py
+src/qme/hamiltonians.py
+src/qme/operators.py
+src/qme/states.py
+src/qme/unitary.py
+src/qme/utils.py
+src/quantum_master_equation.egg-info/PKG-INFO
+src/quantum_master_equation.egg-info/SOURCES.txt
+src/quantum_master_equation.egg-info/dependency_links.txt
+src/quantum_master_equation.egg-info/requires.txt
+src/quantum_master_equation.egg-info/top_level.txt
+tests/test_physics.py

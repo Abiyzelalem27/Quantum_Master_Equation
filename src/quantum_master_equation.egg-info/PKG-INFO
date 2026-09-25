@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: quantum-master-equation
+Version: 0.1.0
+Summary: quantum master equations and open quantum systems
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.24
+Provides-Extra: dev
+Requires-Dist: pytest>=7; extra == "dev"
+Requires-Dist: jupyterlab>=4; extra == "dev"
+Requires-Dist: matplotlib>=3.7; extra == "dev"
+Dynamic: license-file
